@@ -1,20 +1,26 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+صلاتي | Salati
+تطبيق لمتابعة الصلوات اليومية والأذكار، يساعد المستخدم على الالتزام بأداء الصلاة في وقتها من خلال نظام تتبع وتشجيع بسيط.
+المشكلة التي يحلها
+كثير من الناس يعانون من نسيان هل أدّوا صلاة معينة أم لا، خصوصاً مع ضغوط الحياة اليومية. صلاتي يحل هذه المشكلة عبر متابعة منظمة للصلوات الفائتة، مع تقارير دورية ونظام مكافآت يحفّز المستخدم على الاستمرار.
+المميزات
 
-# Run and deploy your AI Studio app
+تسجيل ومتابعة الصلوات اليومية بسهولة
+تتبع الأذكار المخصصة
+تقارير توضح مدى الالتزام بمرور الوقت
+نظام مكافآت وتشجيع للحفاظ على الاستمرارية
 
-This contains everything you need to run your app locally.
+التقنيات المستخدمة
 
-View your app in AI Studio: https://ai.studio/apps/3bbbe06a-55e3-4819-8d86-d0ddf22a79f6
+Frontend: React, TypeScript, Vite, Tailwind CSS
+AI: Google Gemini API (@google/genai)
+Backend / Database: Firebase
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+التشغيل محلياً
+المتطلبات: Node.js
+npm install
+أنشئ ملف .env.local وضع فيه مفتاح Gemini API الخاص بك:
+GEMINI_API_KEY=your_api_key_here
+ثم شغّل المشروع:
+npm run dev
+عن المطور
+تم تطوير هذا المشروع بواسطة إبراهيم العبادي — مهندس برمجيات ومصمم UI/UX، متخصص في بناء منتجات رقمية كاملة (Product Builder) باستخدام Vibe Coding.
