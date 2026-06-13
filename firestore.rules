@@ -1,0 +1,98 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global safety net catches all unspecified collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 64 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Entity validator: userProfile
+    function isValidUserProfile(data) {
+      return data.uid == request.auth.uid
+        && data.updatedAt == request.time
+        && (data.commitmentDays is int && data.commitmentDays >= 0)
+        && (data.muted is bool)
+        && (data.darkMode is bool)
+        && (data.pinkMode is bool)
+        && (data.phraseIndex is int && data.phraseIndex >= 0);
+    }
+
+    // Entity validator: prayerDay
+    function isValidPrayerDay(data) {
+      return data.updatedAt == request.time
+        && (data.fajr is bool)
+        && (data.dhuhr is bool)
+        && (data.asr is bool)
+        && (data.maghrib is bool)
+        && (data.isha is bool);
+    }
+
+    // Users Collection rules
+    match /users/{userId} {
+      // User can read their own profile
+      allow get: if isSignedIn() && isValidId(userId) && userId == request.auth.uid;
+      allow list: if isSignedIn() && isValidId(userId) && userId == request.auth.uid;
+
+      // User can create their own profile with strict properties
+      allow create: if isSignedIn() 
+        && isValidId(userId) 
+        && userId == request.auth.uid 
+        && incoming().keys().hasAll(['uid', 'commitmentDays', 'muted', 'darkMode', 'pinkMode', 'phraseIndex', 'updatedAt']) 
+        && incoming().keys().size() == 7 
+        && isValidUserProfile(incoming());
+
+      // User can update their own profile
+      allow update: if isSignedIn() 
+        && isValidId(userId) 
+        && userId == request.auth.uid 
+        && isValidUserProfile(incoming()) 
+        && incoming().diff(existing()).affectedKeys().hasOnly(['commitmentDays', 'muted', 'darkMode', 'pinkMode', 'phraseIndex', 'updatedAt']);
+
+      // Subcollection of date trackers
+      match /days/{dateId} {
+        // User can read their own day trackers
+        allow get: if isSignedIn() && isValidId(userId) && userId == request.auth.uid && isValidId(dateId);
+        allow list: if isSignedIn() && isValidId(userId) && userId == request.auth.uid;
+
+        // User can create prayer tracker
+        allow create: if isSignedIn() 
+          && isValidId(userId) 
+          && userId == request.auth.uid 
+          && isValidId(dateId)
+          && incoming().keys().hasAll(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'updatedAt']) 
+          && incoming().keys().size() == 6 
+          && isValidPrayerDay(incoming());
+
+        // User can update prayer tracker
+        allow update: if isSignedIn() 
+          && isValidId(userId) 
+          && userId == request.auth.uid 
+          && isValidId(dateId)
+          && isValidPrayerDay(incoming()) 
+          && incoming().diff(existing()).affectedKeys().hasOnly(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'updatedAt']);
+
+        // User can delete day data if needed
+        allow delete: if isSignedIn() && isValidId(userId) && userId == request.auth.uid && isValidId(dateId);
+      }
+    }
+  }
+}

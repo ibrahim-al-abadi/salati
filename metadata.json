@@ -1,0 +1,6 @@
+{
+  "name": "العداد البسيط",
+  "description": "منصة رقمية ذات صفحة واحدة مخصصة للتتبع البسيط للأيام والعدادات بأسلوب عصري ومريح للعين.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

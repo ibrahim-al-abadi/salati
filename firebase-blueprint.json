@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "User Profile",
+      "description": "Stores user preferences and general commitment count",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique user ID matching request.auth.uid"
+        },
+        "commitmentDays": {
+          "type": "integer",
+          "description": "Total committed days streak counts"
+        },
+        "muted": {
+          "type": "boolean",
+          "description": "Whether UI sound effects are muted"
+        },
+        "darkMode": {
+          "type": "boolean",
+          "description": "Whether Dark Mode theme is enabled"
+        },
+        "pinkMode": {
+          "type": "boolean",
+          "description": "Whether sub-theme Pink Mode is enabled"
+        },
+        "phraseIndex": {
+          "type": "integer",
+          "description": "Selected motivational scroll phrase index"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The server timestamp when the user document was updated"
+        }
+      },
+      "required": ["uid", "updatedAt"]
+    },
+    "prayerDay": {
+      "title": "Prayer Day Record",
+      "description": "Stores prayer checklist details for a given date YYYY-MM-DD",
+      "type": "object",
+      "properties": {
+        "fajr": { "type": "boolean", "description": "Fajr checked done" },
+        "dhuhr": { "type": "boolean", "description": "Dhuhr checked done" },
+        "asr": { "type": "boolean", "description": "Asr checked done" },
+        "maghrib": { "type": "boolean", "description": "Maghrib checked done" },
+        "isha": { "type": "boolean", "description": "Isha checked done" },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The server timestamp when the day record was updated"
+        }
+      },
+      "required": ["fajr", "dhuhr", "asr", "maghrib", "isha", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "User profile with commitment counter and user preferences"
+    },
+    "/users/{userId}/days/{dateId}": {
+      "schema": "prayerDay",
+      "description": "Subcollection of date-specific completed prayers for tracking history"
+    }
+  }
+}
